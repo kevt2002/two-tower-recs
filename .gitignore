@@ -1,2 +1,32 @@
+# Personal / local-only files (not part of the public repo)
 AGENTS.md
 two_tower_recommender_brief.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Test / lint caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Data and model artifacts (large, regenerable)
+data/
+models/
+*.pt
+*.pkl
+*.faiss
+
+# Experiment tracking
+wandb/
+
+# IDE
+.idea/
+.vscode/
+
+DECISIONS.md
+NOTES.md
