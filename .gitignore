@@ -15,8 +15,8 @@ venv/
 .coverage
 
 # Data and model artifacts (large, regenerable)
-data/
-models/
+/data/
+/models/
 *.pt
 *.pkl
 *.faiss
