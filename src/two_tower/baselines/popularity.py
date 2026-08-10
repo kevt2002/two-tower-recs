@@ -6,24 +6,22 @@ import pandas as pd
 
 
 class PopularityRecommender:
-    """Recommend the most popular items from the TRAIN set only.
 
-    Hints:
-      - Popularity = interaction count per item in train. The `rating` value
-        doesn't matter here: an interaction is an interaction.
-      - Ties: two items with the same count — what breaks the tie? Pick
-        something deterministic, and think about whether it can even matter.
-      - fit() must never see test data. Leaking test popularity into this
-        baseline is how a "trivial" baseline accidentally beats a real model.
-    """
+    def __init__(self):
+        self._ranking = None
 
     def fit(self, train: pd.DataFrame) -> None:
-        raise NotImplementedError
+
+        unique_count = train["parent_asin"].value_counts()
+        unique_count = unique_count.to_frame("count")
+        unique_count = unique_count.sort_values(
+            by=["count", "parent_asin"], ascending=[False, True]
+        )
+        self._ranking = unique_count.index.tolist()
+
 
     def recommend(self, user_id: str | None = None, k: int = 10) -> list[str]:
-        """Return the k most popular item ids (highest to lowest).
 
-        Note: `user_id` is accepted and ignored. This baseline is
-        user-agnostic — that is the point of it.
-        """
-        raise NotImplementedError
+        if k <= 0:
+            return []
+        return self._ranking[:k]
