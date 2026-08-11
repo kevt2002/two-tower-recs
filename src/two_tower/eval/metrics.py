@@ -9,28 +9,42 @@ All three functions take the same two arguments:
 
 from __future__ import annotations
 
+import math
+
 
 def recall_at_k(relevant: set[str], ranked: list[str], k: int) -> float:
-    """Fraction of relevant items that appear in the top-k of `ranked`.
 
-    Edge cases to handle: k > len(ranked), and empty `relevant` (return 0.0?
-    skip the user entirely? Decide and document it — it changes the mean).
-    """
-    raise NotImplementedError
+    """Fraction of relevant items that appear in the top-k of `ranked`."""
+
+    hits = sum(1 for item in ranked[:k] if item in relevant)
+
+    if len(relevant) == 0:
+        return 0.0
+    else:
+        return hits/len(relevant)
 
 
 def ndcg_at_k(relevant: set[str], ranked: list[str], k: int) -> float:
-    """Discounted cumulative gain: rewards relevant items ranked earlier.
+    """Discounted cumulative gain: rewards relevant items ranked earlier."""
 
-    Standard definition: sum of 1 / log2(position + 1) over relevant items
-    within the top-k, normalized by the ideal DCG.
+    dcg = 0
 
-    Decide: what is the ideal ranking when |relevant| > k, or when a relevant
-    item sits below position k?
-    """
-    raise NotImplementedError
+    for i, item in enumerate(ranked[:k]):
+        if item in relevant:
+            dcg += 1 / math.log2(i+2)
+
+    ideal = sum(1 / math.log2(pos + 1) for pos in range(1, min(k, len(relevant)) + 1))
+
+    if k <= 0 or len(relevant) == 0:
+        return 0.0
+    return dcg/ideal
 
 
 def mrr_at_k(relevant: set[str], ranked: list[str], k: int) -> float:
-    """Reciprocal rank of the first relevant item within the top-k; 0 if none."""
-    raise NotImplementedError
+    """Reciprocal rank of the first relevant item within the top-k; 0 if none"""
+
+    for i, item in enumerate(ranked[:k]):
+        if item in relevant:
+            return 1/(i+1)
+
+    return 0.0
